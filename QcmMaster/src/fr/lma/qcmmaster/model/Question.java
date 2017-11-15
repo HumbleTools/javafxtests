@@ -1,5 +1,7 @@
 package fr.lma.qcmmaster.model;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.json.Json;
@@ -10,6 +12,8 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 import fr.lma.qcmmaster.model.facade.JsonAble;
+import fr.lma.qcmmaster.tec.exception.TechnicalException;
+import fr.lma.qcmmaster.tec.util.DateFormatterUtil;
 
 /**
  * Javabean représentant une question d'examen.
@@ -46,9 +50,36 @@ public class Question implements JsonAble {
 	 */
 	private List<String> tagList;
 
-	private Long creationDate;
+	private Date creationDate;
 
-	private Long modificationDate;
+	private Date modificationDate;
+
+	/**
+	 * Constructeur par défaut.
+	 */
+	public Question() {
+		super();
+	}
+
+	/**
+	 * Constructeur à partir d'une chaîne JSON.
+	 *
+	 * @param json
+	 *            La chaîne JSON représenant la question.
+	 */
+	public Question(final String json) {
+		buildJavaBean(json);
+	}
+
+	/**
+	 * Constructeur à partir d'un objet JSON.
+	 *
+	 * @param json
+	 *            L'objet JSON représentant la question.
+	 */
+	public Question(final JsonObject json) throws TechnicalException {
+		buildJavaBean(json);
+	}
 
 	@Override
 	public JsonObject getJsonObject() {
@@ -67,28 +98,29 @@ public class Question implements JsonAble {
 			tagArray.add(tag);
 		}
 		builder.add("tagList", tagArray.build());
-		builder.add("creationDate", creationDate);
-		builder.add("modificationDate", modificationDate);
+		builder.add("creationDate", DateFormatterUtil.formatDate(creationDate));
+		builder.add("modificationDate", DateFormatterUtil.formatDate(modificationDate));
 		return builder.build();
 	}
 
 	@Override
-	public void buildJavaBean(final JsonObject jsonObject) {
+	public void buildJavaBean(final JsonObject jsonObject) throws TechnicalException {
 		id = jsonObject.getInt("id");
 		title = jsonObject.getString("title");
 		body = jsonObject.getString("body");
 		question = jsonObject.getString("question");
 		final JsonArray answerArray = jsonObject.getJsonArray("answerList");
+		answerList = new ArrayList<Answer>();
 		for (final JsonValue jsonValue : answerArray) {
-			// TODO correctly read answers
+			answerList.add(new Answer((JsonObject) jsonValue));
 		}
 		final JsonArray tagArray = jsonObject.getJsonArray("tagList");
-		for (final JsonValue jsonValue : answerArray) {
-			// TODO correctly read tags
+		tagList = new ArrayList<String>();
+		for (final JsonValue jsonValue : tagArray) {
+			tagList.add(new String(jsonValue.toString()));
 		}
-		// TODO change timestamps to dates + store timestamp strings in json
-		// strings
-		// TODO finish this method
+		creationDate = DateFormatterUtil.parseDate(jsonObject.getString("creationDate"));
+		modificationDate = DateFormatterUtil.parseDate(jsonObject.getString("modificationDate"));
 		// TODO test model with JUnits
 	}
 
@@ -140,19 +172,19 @@ public class Question implements JsonAble {
 		this.tagList = tagList;
 	}
 
-	public Long getCreationDate() {
+	public Date getCreationDate() {
 		return creationDate;
 	}
 
-	public void setCreationDate(final Long creationDate) {
+	public void setCreationDate(final Date creationDate) {
 		this.creationDate = creationDate;
 	}
 
-	public Long getModificationDate() {
+	public Date getModificationDate() {
 		return modificationDate;
 	}
 
-	public void setModificationDate(final Long modificationDate) {
+	public void setModificationDate(final Date modificationDate) {
 		this.modificationDate = modificationDate;
 	}
 }

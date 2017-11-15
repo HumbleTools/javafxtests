@@ -13,16 +13,31 @@ public class Answer implements JsonAble {
 
 	private String body;
 
-	private boolean isRight;
+	private boolean right;
 
+	/**
+	 * Constructeur par défaut.
+	 */
 	public Answer() {
 		super();
 	}
 
+	/**
+	 * Constructeur à partir d'une chaîne JSON.
+	 * 
+	 * @param json
+	 *            La chaîne JSON représenant la réponse.
+	 */
 	public Answer(final String json) {
 		buildJavaBean(json);
 	}
 
+	/**
+	 * Constructeur à partir d'un objet JSON.
+	 * 
+	 * @param json
+	 *            L'objet JSON représentant la réponse.
+	 */
 	public Answer(final JsonObject json) {
 		buildJavaBean(json);
 	}
@@ -31,14 +46,14 @@ public class Answer implements JsonAble {
 	public JsonObject getJsonObject() {
 		final JsonObjectBuilder builder = Json.createObjectBuilder();
 		builder.add("body", body);
-		builder.add("isRight", isRight);
+		builder.add("isRight", right);
 		return builder.build();
 	}
 
 	@Override
 	public void buildJavaBean(final JsonObject jsonObject) {
 		body = jsonObject.getString("body");
-		isRight = jsonObject.getBoolean("isRight");
+		right = jsonObject.getBoolean("isRight");
 	}
 
 	public String getBody() {
@@ -50,11 +65,11 @@ public class Answer implements JsonAble {
 	}
 
 	public boolean isRight() {
-		return isRight;
+		return right;
 	}
 
 	public void setRight(final boolean isRight) {
-		this.isRight = isRight;
+		this.right = isRight;
 	}
 
 }

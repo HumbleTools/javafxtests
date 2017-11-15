@@ -8,6 +8,8 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonWriter;
 
+import fr.lma.qcmmaster.tec.exception.TechnicalException;
+
 public interface JsonAble {
 
 	/**
@@ -40,8 +42,10 @@ public interface JsonAble {
 	 *
 	 * @param jsonObject
 	 *            Le JSON entrant.
+	 * @throws TechnicalException
+	 *             En cas de problème de parsing.
 	 */
-	void buildJavaBean(JsonObject jsonObject);
+	void buildJavaBean(JsonObject jsonObject) throws TechnicalException;
 
 	/**
 	 * Builds the current object with the json string.
@@ -51,8 +55,14 @@ public interface JsonAble {
 	 */
 	default void buildJavaBean(final String jsonString) {
 		final JsonReader reader = Json.createReader(new StringReader(jsonString));
-		buildJavaBean(reader.readObject());
-		reader.close();
+		try {
+			buildJavaBean(reader.readObject());
+		} catch (final TechnicalException te) {
+			te.printStackTrace();
+			throw new RuntimeException(te);
+		} finally {
+			reader.close();
+		}
 	}
 
 }
