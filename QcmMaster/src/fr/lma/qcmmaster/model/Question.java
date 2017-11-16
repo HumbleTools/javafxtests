@@ -1,19 +1,23 @@
 package fr.lma.qcmmaster.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonString;
 import javax.json.JsonValue;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import fr.lma.qcmmaster.tec.exception.TechnicalException;
 import fr.lma.qcmmaster.tec.facade.JsonAble;
-import fr.lma.qcmmaster.tec.util.DateFormatterUtil;
+import fr.lma.qcmmaster.tec.util.DateBuilderUtil;
 
 /**
  * Javabean représentant une question d'examen.
@@ -43,14 +47,14 @@ public class Question implements JsonAble {
 	private String question;
 
 	/**
-	 * Liste des réponses possibles.
+	 * Set des réponses possibles.
 	 */
-	private List<Answer> answerList;
+	private TreeSet<Answer> answerSet;
 
 	/**
-	 * Liste des tags pour chaque question.
+	 * Set des tags pour chaque question.
 	 */
-	private List<String> tagList;
+	private TreeSet<String> tagSet;
 
 	/**
 	 * Date de création.
@@ -97,17 +101,17 @@ public class Question implements JsonAble {
 		builder.add("body", body);
 		builder.add("question", question);
 		final JsonArrayBuilder answerArray = Json.createArrayBuilder();
-		for (final Answer answer : answerList) {
+		for (final Answer answer : answerSet) {
 			answerArray.add(answer.getJsonObject());
 		}
-		builder.add("answerList", answerArray.build());
+		builder.add("answerSet", answerArray.build());
 		final JsonArrayBuilder tagArray = Json.createArrayBuilder();
-		for (final String tag : tagList) {
+		for (final String tag : tagSet) {
 			tagArray.add(tag);
 		}
-		builder.add("tagList", tagArray.build());
-		builder.add("creationDate", DateFormatterUtil.formatDate(creationDate));
-		builder.add("modificationDate", DateFormatterUtil.formatDate(modificationDate));
+		builder.add("tagSet", tagArray.build());
+		builder.add("creationDate", DateBuilderUtil.formatDate(creationDate));
+		builder.add("modificationDate", DateBuilderUtil.formatDate(modificationDate));
 		return builder.build();
 	}
 
@@ -117,18 +121,53 @@ public class Question implements JsonAble {
 		title = jsonObject.getString("title");
 		body = jsonObject.getString("body");
 		question = jsonObject.getString("question");
-		final JsonArray answerArray = jsonObject.getJsonArray("answerList");
-		answerList = new ArrayList<Answer>();
+		final JsonArray answerArray = jsonObject.getJsonArray("answerSet");
+		answerSet = new TreeSet<>();
 		for (final JsonValue jsonValue : answerArray) {
-			answerList.add(new Answer((JsonObject) jsonValue));
+			answerSet.add(new Answer((JsonObject) jsonValue));
 		}
-		final JsonArray tagArray = jsonObject.getJsonArray("tagList");
-		tagList = new ArrayList<String>();
+		final JsonArray tagArray = jsonObject.getJsonArray("tagSet");
+		tagSet = new TreeSet<>();
 		for (final JsonValue jsonValue : tagArray) {
-			tagList.add(new String(jsonValue.toString()));
+			tagSet.add(new String(((JsonString) jsonValue).getString()));
 		}
-		creationDate = DateFormatterUtil.parseDate(jsonObject.getString("creationDate"));
-		modificationDate = DateFormatterUtil.parseDate(jsonObject.getString("modificationDate"));
+		creationDate = DateBuilderUtil.parseDate(jsonObject.getString("creationDate"));
+		modificationDate = DateBuilderUtil.parseDate(jsonObject.getString("modificationDate"));
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(1233, 1239)
+				.append(id)
+				.append(title)
+				.append(body)
+				.append(question)
+				.append(creationDate)
+				.append(modificationDate)
+				.append(answerSet)
+				.append(tagSet)
+				.toHashCode();
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		} else if ((null == obj) || !(obj instanceof Question)) {
+			return false;
+		} else {
+			final Question quest = (Question) obj;
+			return new EqualsBuilder()
+					.append(id, quest.id)
+					.append(title, quest.title)
+					.append(body, quest.body)
+					.append(question, quest.question)
+					.append(creationDate, quest.creationDate)
+					.append(modificationDate, quest.modificationDate)
+					.append(answerSet, quest.answerSet)
+					.append(tagSet, quest.tagSet)
+					.isEquals();
+		}
 	}
 
 	public Integer getId() {
@@ -163,20 +202,20 @@ public class Question implements JsonAble {
 		this.question = question;
 	}
 
-	public List<Answer> getAnswerList() {
-		return answerList;
+	public Set<Answer> getAnswerSet() {
+		return answerSet;
 	}
 
-	public void setAnswerList(final List<Answer> answerList) {
-		this.answerList = answerList;
+	public void setAnswerSet(final TreeSet<Answer> answerSet) {
+		this.answerSet = answerSet;
 	}
 
-	public List<String> getTagList() {
-		return tagList;
+	public Set<String> getTagSet() {
+		return tagSet;
 	}
 
-	public void setTagList(final List<String> tagList) {
-		this.tagList = tagList;
+	public void setTagSet(final TreeSet<String> tagSet) {
+		this.tagSet = tagSet;
 	}
 
 	public Date getCreationDate() {

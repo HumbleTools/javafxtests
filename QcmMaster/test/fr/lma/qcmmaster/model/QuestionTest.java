@@ -1,10 +1,12 @@
 package fr.lma.qcmmaster.model;
 
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.TreeSet;
 
 import org.junit.Test;
+
+import fr.lma.qcmmaster.tec.util.DateBuilderUtil;
+import junit.framework.Assert;
 
 /**
  * Teste la classe {@link Question} du modèle.
@@ -13,35 +15,31 @@ public class QuestionTest {
 
 	@Test
 	public void testGetJsonString() {
-		final Question question = new Question();
-		question.setId(123);
-		question.setTitle("Question de test !");
-		question.setBody("System.out.println(\"HelloWorld\");");
-		question.setQuestion("Choose the right answers !");
-		question.setTagList(Arrays.asList("easy", "obj-1.1"));
-		final Answer a1 = new Answer();
-		a1.setBody("Mauvaise réponse !");
-		a1.setRight(false);
-		a1.setPosition(1);
-		final Answer a2 = new Answer();
-		a2.setBody("Bonne réponse !");
-		a2.setRight(true);
-		a2.setPosition(2);
-		final Answer a3 = new Answer();
-		a3.setBody("La réponde D.");
-		a3.setRight(true);
-		a3.setPosition(3);
-		question.setAnswerList(Arrays.asList(a1, a2, a3));
-		final Calendar cal = Calendar.getInstance(Locale.FRANCE);
-		cal.set(2017, 2, 5, 14, 32, 59);
-		question.setCreationDate(cal.getTime());
-		cal.set(2017, 2, 6, 16, 2, 31);
-		question.setModificationDate(cal.getTime());
+		final Question questionIn = new Question();
+		questionIn.setId(123);
+		questionIn.setTitle("Question de test !");
+		questionIn.setBody("System.out.println(\"HelloWorld\");");
+		questionIn.setQuestion("Choose the right answers !");
+		questionIn.setTagSet(new TreeSet<>(Arrays.asList("easy", "obj-1.1")));
+		questionIn.setAnswerSet(new TreeSet<>(Arrays.asList(
+				new Answer(1, false, "Mauvaise réponse !"),
+				new Answer(2, true, "Bonne réponse !"),
+				new Answer(3, true, "La réponse D."))));
+		questionIn.setCreationDate(DateBuilderUtil.getDate(2017, 2, 5, 14, 32, 59));
+		questionIn.setModificationDate(DateBuilderUtil.getDate(2017, 2, 6, 16, 2, 31));
 
-		System.out.println(question.getJsonString());
-		// TODO terminer les junits
-		// TODO make answers comparable (order)
-
+		final String jsonString = questionIn.getJsonString();
+		final Question questionOut = new Question(jsonString);
+		System.out.println(jsonString);
+		Assert.assertEquals(questionIn.getId(), questionOut.getId());
+		Assert.assertEquals(questionIn.getBody(), questionOut.getBody());
+		Assert.assertEquals(questionIn.getTitle(), questionOut.getTitle());
+		Assert.assertEquals(questionIn.getQuestion(), questionOut.getQuestion());
+		Assert.assertEquals(questionIn.getTagSet(), questionOut.getTagSet());
+		Assert.assertEquals(questionIn.getAnswerSet(), questionOut.getAnswerSet());
+		Assert.assertEquals(questionIn.getCreationDate(), questionOut.getCreationDate());
+		Assert.assertEquals(questionIn.getModificationDate(), questionOut.getModificationDate());
+		Assert.assertEquals(questionIn, questionOut);
 	}
 
 }
