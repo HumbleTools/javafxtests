@@ -11,14 +11,16 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import fr.lma.qcmmaster.model.facade.JsonAble;
 import fr.lma.qcmmaster.tec.exception.TechnicalException;
+import fr.lma.qcmmaster.tec.facade.JsonAble;
 import fr.lma.qcmmaster.tec.util.DateFormatterUtil;
 
 /**
  * Javabean représentant une question d'examen.
  */
 public class Question implements JsonAble {
+
+	private static final long serialVersionUID = 6209654778729641992L;
 
 	/**
 	 * Identifiant unique.
@@ -50,8 +52,14 @@ public class Question implements JsonAble {
 	 */
 	private List<String> tagList;
 
+	/**
+	 * Date de création.
+	 */
 	private Date creationDate;
 
+	/**
+	 * Date de modification.
+	 */
 	private Date modificationDate;
 
 	/**
@@ -121,7 +129,6 @@ public class Question implements JsonAble {
 		}
 		creationDate = DateFormatterUtil.parseDate(jsonObject.getString("creationDate"));
 		modificationDate = DateFormatterUtil.parseDate(jsonObject.getString("modificationDate"));
-		// TODO test model with JUnits
 	}
 
 	public Integer getId() {

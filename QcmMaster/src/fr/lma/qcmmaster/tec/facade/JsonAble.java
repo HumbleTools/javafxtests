@@ -1,5 +1,6 @@
-package fr.lma.qcmmaster.model.facade;
+package fr.lma.qcmmaster.tec.facade;
 
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -10,7 +11,7 @@ import javax.json.JsonWriter;
 
 import fr.lma.qcmmaster.tec.exception.TechnicalException;
 
-public interface JsonAble {
+public interface JsonAble extends Serializable {
 
 	/**
 	 * Builds a JSON String corresponding to this JsonAble object.
