@@ -13,11 +13,11 @@ import fr.lma.qcmmaster.tec.exception.TechnicalException;
 /**
  * Utilitaire de lecture/écriture des dates.
  */
-public class DateBuilderUtil {
+public class DateBuilder {
 
-	private static final Locale FRANCE = Locale.FRANCE;
+	public static final Locale FRANCE = Locale.FRANCE;
 
-	private final static SimpleDateFormat FR_FORMAT = new SimpleDateFormat("yyyyMMdd-HH:mm:ss", FRANCE);
+	public final static SimpleDateFormat FR_FORMAT = new SimpleDateFormat("yyyyMMdd-HH:mm:ss", FRANCE);
 
 	/**
 	 * Formate une date en String en utilisant {@link #FR_FORMAT}.

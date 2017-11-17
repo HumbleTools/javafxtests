@@ -1,21 +1,13 @@
 package fr.lma.qcmmaster.model;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import fr.lma.qcmmaster.tec.facade.JsonAble;
-
 /**
  * JavaBean d'une réponse de question.
  */
-public class Answer implements JsonAble, Comparable<Answer> {
-
-	private static final long serialVersionUID = 1612937502701519025L;
+public class Answer implements Comparable<Answer> {
 
 	/**
 	 * Position de la réponse dans une question.
@@ -40,26 +32,6 @@ public class Answer implements JsonAble, Comparable<Answer> {
 	}
 
 	/**
-	 * Constructeur à partir d'une chaîne JSON.
-	 *
-	 * @param json
-	 *            La chaîne JSON représenant la réponse.
-	 */
-	public Answer(final String json) {
-		buildJavaBean(json);
-	}
-
-	/**
-	 * Constructeur à partir d'un objet JSON.
-	 *
-	 * @param json
-	 *            L'objet JSON représentant la réponse.
-	 */
-	public Answer(final JsonObject json) {
-		buildJavaBean(json);
-	}
-
-	/**
 	 * Constructeur paramétré.
 	 *
 	 * @param position
@@ -73,22 +45,6 @@ public class Answer implements JsonAble, Comparable<Answer> {
 		setPosition(position);
 		this.body = body;
 		this.right = right;
-	}
-
-	@Override
-	public JsonObject getJsonObject() {
-		final JsonObjectBuilder builder = Json.createObjectBuilder();
-		builder.add("body", body);
-		builder.add("isRight", right);
-		builder.add("position", position);
-		return builder.build();
-	}
-
-	@Override
-	public void buildJavaBean(final JsonObject jsonObject) {
-		body = jsonObject.getString("body");
-		right = jsonObject.getBoolean("isRight");
-		position = (short) jsonObject.getInt("position");
 	}
 
 	@Override
