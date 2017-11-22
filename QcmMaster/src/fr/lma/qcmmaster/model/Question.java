@@ -4,13 +4,14 @@ import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Javabean représentant une question d'examen.
  */
-public class Question {
+public class Question implements Comparable<Question> {
 
 	/**
 	 * Identifiant unique.
@@ -85,6 +86,13 @@ public class Question {
 					.append(tagSet, quest.tagSet)
 					.isEquals();
 		}
+	}
+
+	@Override
+	public int compareTo(final Question o) {
+		return new CompareToBuilder()
+				.append(id, o.id)
+				.toComparison();
 	}
 
 	public Integer getId() {
